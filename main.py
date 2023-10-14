@@ -6,14 +6,19 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandObject, CommandStart
 from aiogram.types import Message
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.markdown import hbold
 import messages
+import sqlite
 from coordinates import Coordinates
+from sqlite import db_connect, cloth
 
 
-TOKEN = "6228920120:AAFfSONwpoqYiH4r3kqaqU94FImGFpk8piU"
 
-dp = Dispatcher()
+
+TOKEN = "6306514269:AAHCpZL5uAItLcs8rOPt0RDEcEwFr3WG_w4"
+
+dp = Dispatcher(storage=MemoryStorage())
 HELPCOMMAND = """
 /help - помощь
 /start - запуск бота
@@ -32,6 +37,9 @@ WEATHERHOT = [
     "https://krasivosti.pro/uploads/posts/2021-07/1625868785_54-krasivosti-pro-p-kotu-zharko-koti-krasivo-foto-58.jpg",
     "https://krasivosti.pro/uploads/posts/2021-07/1625868786_17-krasivosti-pro-p-kotu-zharko-koti-krasivo-foto-18.jpg"]
 CITY = ["Moscow", "Leninogorsk", "Kazan", "New York", "Samara"]
+
+async def on_startup(_):
+    await sqlite.db_connect()
 
 
 @dp.message(CommandStart())
@@ -71,22 +79,23 @@ async def weather(message: types.Message, command: CommandObject):
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb,
                                          resize_keyboard=True)
+
     if command.args:
-        try:
-            wthr = await messages.weather_for_city(command.args)
-            await message.answer_photo(photo=f"https://cataas.com/cat/says/{command.args}", caption=f'{command.args}, {wthr.description}\n' \
-                                           f'Температура - {wthr.temperature}°C, ощущается, как {wthr.temperature_feeling}°C',
+        wthr = await messages.weather_for_city(command.args)
+        response_text = await sqlite.cloth(wthr.temperature)
+        await message.answer_photo(photo=f"https://cataas.com/cat/says/{command.args}", caption=f'{command.args}, {wthr.description}\n' \
+                                           f'Температура - {wthr.temperature}°C, ощущается, как {wthr.temperature_feeling}°C. {response_text}',
                                            reply_markup=keyboard)
-        except:
-            await message.answer(
-                "Непредвиденная ошибка. Напишите, пожалуйста, существующий город или обратитесь в тех. поддрежку")
+
+
+
     else:
         await message.answer("Пожалуйста напишете город после команды /weathercity")
 
 
 async def main() -> None:
     bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
-    await dp.start_polling(bot)
+    await dp.start_polling(bot, on_startup=on_startup)
 
 
 if __name__ == "__main__":
