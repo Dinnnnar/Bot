@@ -2,7 +2,7 @@ from typing import Literal, TypeAlias
 from urllib.request import urlopen
 from dataclasses import dataclass
 import json
-
+import aiohttp
 from coordinates import Coordinates
 
 Celsius: TypeAlias = float
@@ -22,21 +22,20 @@ class Weather:
     description: str
 
 
-def get_weather(coordinates=Coordinates) -> Weather:
-    """Requests the weather in OpenWeather API and returns it"""
+async def get_weather(coordinates=Coordinates):
     longitude = coordinates.longitude
     latitude = coordinates.latitude
     url = CURRENT_WEATHER_API_CALL.format(latitude=latitude, longitude=longitude)
-    openweather_response = urlopen(url).read()
-    openweather_dict = json.loads(openweather_response)
-    print(openweather_dict)
-    weather = Weather(
-        location=openweather_dict['name'],
-        temperature=openweather_dict['main']['temp'],
-        temperature_feeling=openweather_dict['main']['feels_like'],
-        description=str(openweather_dict['weather'][0]['description']).capitalize(),
-    )
-    return weather
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            openweather_dict = await resp.json()
+            weather = Weather(
+                location=openweather_dict['name'],
+                temperature=openweather_dict['main']['temp'],
+                temperature_feeling=openweather_dict['main']['feels_like'],
+                description=str(openweather_dict['weather'][0]['description']).capitalize(),
+            )
+            return weather
 
 
 

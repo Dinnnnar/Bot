@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.filters import Command, CommandObject
-from aiogram.types import Message
+from aiogram.types import Message, Location
 from aiogram.utils.markdown import hbold
 import messages
 
@@ -17,6 +17,7 @@ HELPCOMMAND = """
 /help - помощь
 /start - запуск бота
 /weathercity - погода у города, который вы укажете
+/weather - погода у вас
 """
 PICTUREHELP = ["https://i.imgur.com/wgYIKr3.jpg",
                "https://yt3.ggpht.com/Z1aEpn6VOMBjHghE6CHVO4lkQchQBPVlQJXUq58ONkNoVIkQDW_9A936qmA5DNDc3oCUZVMNLg=s900-c-k-c0x00ffffff-no-rj",
@@ -49,7 +50,6 @@ async def command_start_handler(message: Message) -> None:
 async def help(message: Message):
     await message.answer_photo(photo=random.choice(PICTUREHELP), caption=HELPCOMMAND)
 
-
 @dp.message(Command("weathercity"))
 async def city_weather(message: types.Message, command: CommandObject):
     kb = [
@@ -60,7 +60,7 @@ async def city_weather(message: types.Message, command: CommandObject):
                                          resize_keyboard=True)
     if command.args:
         try:
-            wthr = messages.weather_for_city(command.args)
+            wthr = await messages.weather_for_city(command.args)
             await message.answer_photo(photo=f"https://cataas.com/cat/says/{command.args}", caption=f'{command.args}, {wthr.description}\n' \
                                            f'Температура - {wthr.temperature}°C, ощущается, как {wthr.temperature_feeling}°C',
                                            reply_markup=keyboard)
