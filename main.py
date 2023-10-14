@@ -16,7 +16,6 @@ dp = Dispatcher()
 HELPCOMMAND = """
 /help - помощь
 /start - запуск бота
-/weather - погода у вас
 /weathercity - погода у города, который вы укажете
 """
 PICTUREHELP = ["https://i.imgur.com/wgYIKr3.jpg",
@@ -62,17 +61,8 @@ async def city_weather(message: types.Message, command: CommandObject):
     if command.args:
         try:
             wthr = messages.weather_for_city(command.args)
-            if wthr.temperature <= 20:
-                await message.answer_photo(photo=
-                                           f"https://cataas.com/cat/says/{command.args}", caption=
-                                           f'{command.args}, {wthr.description}\n' \
-                                           f'Температура - {wthr.temperature}°C, ощущается, как - {wthr.temperature_feeling}°C',
-                                           reply_markup=keyboard)
-            if wthr.temperature > 20:
-                await message.answer_photo(photo=
-                                           f"https://cataas.com/cat/says/{command.args}", caption=
-                                           f'{command.args}, {wthr.description}\n' \
-                                           f'Температура - {wthr.temperature}°C, ощущается, как - {wthr.temperature_feeling}°C',
+            await message.answer_photo(photo=f"https://cataas.com/cat/says/{command.args}", caption=f'{command.args}, {wthr.description}\n' \
+                                           f'Температура - {wthr.temperature}°C, ощущается, как {wthr.temperature_feeling}°C',
                                            reply_markup=keyboard)
         except:
             await message.answer(

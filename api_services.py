@@ -29,6 +29,7 @@ def get_weather(coordinates=Coordinates) -> Weather:
     url = CURRENT_WEATHER_API_CALL.format(latitude=latitude, longitude=longitude)
     openweather_response = urlopen(url).read()
     openweather_dict = json.loads(openweather_response)
+    print(openweather_dict)
     weather = Weather(
         location=openweather_dict['name'],
         temperature=openweather_dict['main']['temp'],
