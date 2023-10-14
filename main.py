@@ -16,7 +16,7 @@ from sqlite import db_connect, cloth
 
 
 
-TOKEN = "6306514269:AAHCpZL5uAItLcs8rOPt0RDEcEwFr3WG_w4"
+TOKEN = "6228920120:AAFfSONwpoqYiH4r3kqaqU94FImGFpk8piU"
 
 dp = Dispatcher(storage=MemoryStorage())
 HELPCOMMAND = """
@@ -66,9 +66,10 @@ async def loc_handler(message: Message):
     lon = message.location.longitude
     loc = Coordinates(latitude=lat, longitude=lon)
     wthr = await messages.weather(loc)
+    response_text = await sqlite.cloth(wthr.temperature)
     await message.answer_photo(photo=f"{random.choice(WEATHERCOLD)}",
                                caption=f'{wthr.location}, {wthr.description}\n' \
-                                       f'Температура - {wthr.temperature}°C, ощущается, как {wthr.temperature_feeling}°C')
+                                       f'Температура - {wthr.temperature}°C, ощущается, как {wthr.temperature_feeling}°C. {response_text}')
 
 @dp.message(Command("weathercity"))
 async def weather(message: types.Message, command: CommandObject):
