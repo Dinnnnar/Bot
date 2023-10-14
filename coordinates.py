@@ -1,6 +1,4 @@
-from urllib.request import urlopen
 from dataclasses import dataclass
-import json
 from geopy.geocoders import Nominatim
 
 
