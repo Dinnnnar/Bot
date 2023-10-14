@@ -1,8 +1,6 @@
 from typing import Literal, TypeAlias
 from urllib.request import urlopen
 from dataclasses import dataclass
-from datetime import datetime
-from enum import IntEnum
 import json
 
 from coordinates import Coordinates

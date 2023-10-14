@@ -38,7 +38,6 @@ CITY = ["Moscow", "Leninogorsk", "Kazan", "New York", "Samara"]
 async def command_start_handler(message: Message) -> None:
     kb = [
         [types.KeyboardButton(text="/help")],
-        [types.KeyboardButton(text="/weather")],
         [types.KeyboardButton(text=f"/weathercity {random.choice(CITY)}")]
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb,
@@ -52,26 +51,10 @@ async def help(message: Message):
     await message.answer_photo(photo=random.choice(PICTUREHELP), caption=HELPCOMMAND)
 
 
-@dp.message(Command("weather"))
-async def weather(message: Message):
-    wthr = messages.weather()
-    if wthr.temperature < 10:
-        await message.answer_photo(photo=
-                                   random.choice(WEATHERCOLD), caption=
-                                   f'{wthr.location}, {wthr.description}\n' \
-                                   f'Температура - {wthr.temperature}°C, ощущается, как - {wthr.temperature_feeling}°C')
-    if wthr.temperature > 10:
-        await message.answer_photo(photo=
-                                   random.choice(WEATHERHOT), caption=
-                                   f'{wthr.location}, {wthr.description}\n' \
-                                   f'Температура - {wthr.temperature}°C, ощущается, как - {wthr.temperature_feeling}°C')
-
-
 @dp.message(Command("weathercity"))
 async def city_weather(message: types.Message, command: CommandObject):
     kb = [
         [types.KeyboardButton(text="/help")],
-        [types.KeyboardButton(text="/weather")],
         [types.KeyboardButton(text=f"/weathercity {random.choice(CITY)}")]
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb,

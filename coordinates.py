@@ -10,21 +10,9 @@ class Coordinates:
     longitude: float
 
 
-def get_coordinates() -> Coordinates:
-    """Returns current coordinates using IP address"""
-    data = _get_ip_data()
-    latitude = data['loc'].split(',')[0]
-    longitude = data['loc'].split(',')[1]
-
-    return Coordinates(latitude=latitude, longitude=longitude)
-
 def get_coordinates_for_city(city: str) -> Coordinates:
     geolocator = Nominatim(user_agent="Tester")
     location = geolocator.geocode(city)
     return Coordinates(latitude=location.latitude, longitude=location.longitude)
 
 
-def _get_ip_data() -> dict:
-    url = 'http://ipinfo.io/json'
-    response = urlopen(url)
-    return json.load(response)
