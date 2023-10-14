@@ -6,7 +6,7 @@ from coordinates import Coordinates
 Celsius: TypeAlias = float
 WEATHER_API_KEY = 'b9e15db53ab5f2d24c1dce7f4ce49632'
 CURRENT_WEATHER_API_CALL = (
-        'https://api.openweathermap.org/data/2.5/weather?'
+        'https://api.openweathermap.org/data/2.5/weather?&lang=ru&'
         'lat={latitude}&lon={longitude}&'
         'appid=' + WEATHER_API_KEY + '&units=metric'
 )
