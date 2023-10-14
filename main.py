@@ -2,6 +2,7 @@ import asyncio
 import logging
 import sys
 import random
+from aiogram import F
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
@@ -34,14 +35,13 @@ WEATHERHOT = [
     "https://krasivosti.pro/uploads/posts/2021-07/1625868786_17-krasivosti-pro-p-kotu-zharko-koti-krasivo-foto-18.jpg"]
 CITY = ["Moscow", "Leninogorsk", "Kazan", "New York", "Samara"]
 
-loc: Coordinates
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     kb = [
         [types.KeyboardButton(text="/help")],
         [types.KeyboardButton(text=f"/weathercity {random.choice(CITY)}")],
-        [types.KeyboardButton(text="Отправить локацию", request_location=True)]
+        [types.KeyboardButton(text="Узнать погоду", request_location=True)]
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb,
                                          resize_keyboard=True)
@@ -54,31 +54,19 @@ async def help(message: Message):
     await message.answer_photo(photo=random.choice(PICTUREHELP), caption=HELPCOMMAND)
 
 
-@dp.message()
-async def loc_handler(message: Location):
+@dp.message(F.location)
+async def loc_handler(message: Message):
     global loc
     lat = message.location.latitude
     lon = message.location.longitude
     loc = Coordinates(latitude=lat, longitude=lon)
-
-
-@dp.message(Command("weather"))
-async def city_weather(message: types.Message):
-    global loc
-    location = loc
-    await message.answer("loc")
-    try:
-        wthr = await messages.weather(location)
-        await message.answer_photo(photo=f"https://cataas.com/cat/says/{command.args}", caption=f'{command.args}, {wthr.description}\n' \
-                                           f'Температура - {wthr.temperature}°C, ощущается, как {wthr.temperature_feeling}°C',
-                                           reply_markup=keyboard)
-    except:
-         await message.answer(
-                "Непредвиденная ошибка. Напишите, пожалуйста, существующий город или обратитесь в тех. поддрежку")
-
+    wthr = await messages.weather(loc)
+    await message.answer_photo(photo=f"{random.choice(WEATHERCOLD)}",
+                               caption=f'{wthr.location}, {wthr.description}\n' \
+                                       f'Температура - {wthr.temperature}°C, ощущается, как {wthr.temperature_feeling}°C')
 
 @dp.message(Command("weathercity"))
-async def city_weather(message: types.Message, command: CommandObject):
+async def weather(message: types.Message, command: CommandObject):
     kb = [
         [types.KeyboardButton(text="/help")],
         [types.KeyboardButton(text=f"/weathercity {random.choice(CITY)}")]
