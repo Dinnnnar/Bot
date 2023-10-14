@@ -2,15 +2,14 @@ import asyncio
 import logging
 import sys
 import random
-from aiogram import F
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
-from aiogram.filters import Command, CommandObject
-from aiogram.types import Message, Location
+from aiogram.filters import Command, CommandObject, CommandStart
+from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 import messages
 from coordinates import Coordinates
+
 
 TOKEN = "6228920120:AAFfSONwpoqYiH4r3kqaqU94FImGFpk8piU"
 
@@ -19,7 +18,6 @@ HELPCOMMAND = """
 /help - помощь
 /start - запуск бота
 /weathercity - погода у города, который вы укажете
-/weather - погода у вас
 """
 PICTUREHELP = ["https://i.imgur.com/wgYIKr3.jpg",
                "https://yt3.ggpht.com/Z1aEpn6VOMBjHghE6CHVO4lkQchQBPVlQJXUq58ONkNoVIkQDW_9A936qmA5DNDc3oCUZVMNLg=s900-c-k-c0x00ffffff-no-rj",
@@ -56,7 +54,6 @@ async def help(message: Message):
 
 @dp.message(F.location)
 async def loc_handler(message: Message):
-    global loc
     lat = message.location.latitude
     lon = message.location.longitude
     loc = Coordinates(latitude=lat, longitude=lon)
@@ -69,7 +66,8 @@ async def loc_handler(message: Message):
 async def weather(message: types.Message, command: CommandObject):
     kb = [
         [types.KeyboardButton(text="/help")],
-        [types.KeyboardButton(text=f"/weathercity {random.choice(CITY)}")]
+        [types.KeyboardButton(text=f"/weathercity {random.choice(CITY)}")],
+        [types.KeyboardButton(text="Узнать погоду", request_location=True)]
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb,
                                          resize_keyboard=True)

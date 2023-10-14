@@ -1,7 +1,5 @@
-from typing import Literal, TypeAlias
-from urllib.request import urlopen
+from typing import TypeAlias
 from dataclasses import dataclass
-import json
 import aiohttp
 from coordinates import Coordinates
 
