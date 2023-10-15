@@ -2,7 +2,6 @@ from typing import TypeAlias
 from dataclasses import dataclass
 import aiohttp
 from coordinates import Coordinates
-
 Celsius: TypeAlias = float
 WEATHER_API_KEY = 'b9e15db53ab5f2d24c1dce7f4ce49632'
 CURRENT_WEATHER_API_CALL = (
