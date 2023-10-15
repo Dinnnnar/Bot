@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-TOKEN = "6228920120:AAFfSONwpoqYiH4r3kqaqU94FImGFpk8piU"
+TOKEN = 
 
 dp = Dispatcher(storage=MemoryStorage())
 HELPCOMMAND = """
